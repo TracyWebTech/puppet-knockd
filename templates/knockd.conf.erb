@@ -1,33 +1,33 @@
 [options]
       UseSyslog
 
-<% if @command_timeout %>
+<% if scope['knockd::command_timeout'] %>
 [opencloseSSH]
-      sequence    = <%= @sequence_open %>
+      sequence    = <%= scope['knockd::sequence_open'] %>
       seq_timeout   = 15
       tcpflags      = syn
-      <% if @prepend_rule %>
-      start_command = /sbin/iptables -I INPUT 1 -s %IP% -p tcp --dport <%=@port_to_manage %> -j ACCEPT
+      <% if scope['knockd::prepend_rule'] %>
+      start_command = /sbin/iptables -I INPUT 1 -s %IP% -p tcp --dport <%= scope['knockd::port_to_manage'] %> -j ACCEPT
       <% else %>
-      start_command = /sbin/iptables -A INPUT -s %IP% -p tcp --dport <%=@port_to_manage %> -j ACCEPT
+      start_command = /sbin/iptables -A INPUT -s %IP% -p tcp --dport <%= scope['knockd::port_to_manage'] %> -j ACCEPT
       <% end %>
-      cmd_timeout   = <%= @command_timeout %>
-      stop_command  = /sbin/iptables -D INPUT -s %IP% -p tcp --dport <%= @port_to_manage %> -j ACCEPT
+      cmd_timeout   = <%= scope['knockd::command_timeout'] %>
+      stop_command  = /sbin/iptables -D INPUT -s %IP% -p tcp --dport <%= scope['knockd::port_to_manage'] %> -j ACCEPT
 
 <% else %>
 [openSSH]
-      sequence    = <%= @sequence_open %>
+      sequence    = <%= scope['knockd::sequence_open'] %>
       seq_timeout = 5
-      <% if @prepend_rule %>
-      command     = /sbin/iptables -I INPUT 1 -s %IP% -p tcp --dport <%= @port_to_manage%> -j ACCEPT
+      <% if scope['knockd::prepend_rule'] %>
+      command     = /sbin/iptables -I INPUT 1 -s %IP% -p tcp --dport <%= scope['knockd::port_to_manage'] %> -j ACCEPT
       <% else %>
-      command     = /sbin/iptables -A INPUT -s %IP% -p tcp --dport <%= @port_to_manage%> -j ACCEPT
+      command     = /sbin/iptables -A INPUT -s %IP% -p tcp --dport <%= scope['knockd::port_to_manage'] %> -j ACCEPT
       <% end %>
       tcpflags    = syn
 
 [closeSSH]
-      sequence    = <%= @sequence_close %>
+      sequence    = <%= scope['knockd::sequence_close'] %>
       seq_timeout = 5
-      command     = /sbin/iptables -D INPUT -s %IP% -p tcp --dport <%= @port_to_manage%> -j ACCEPT
+      command     = /sbin/iptables -D INPUT -s %IP% -p tcp --dport <%= scope['knockd::port_to_manage'] %> -j ACCEPT
       tcpflags    = syn
 <% end %>

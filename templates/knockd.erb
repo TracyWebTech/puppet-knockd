@@ -8,4 +8,4 @@
 START_KNOCKD=1
 
 # command line options
-KNOCKD_OPTS="-i <%= @interface_to_manage %>"
+KNOCKD_OPTS="-i <%= scope['knockd::interface_to_manage'] %>"
